@@ -1,20 +1,20 @@
 import unittest
 
-from htmlnode import HtmlNode, LeafNode, ParentNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHtmlNode(unittest.TestCase):
     def test_props_to_html_with_props(self):
-        node = HtmlNode(props={"href": "https://boot.dev", "target": "_blank"})
+        node = HTMLNode(props={"href": "https://boot.dev", "target": "_blank"})
         expected_output = ' href="https://boot.dev" target="_blank"'
         self.assertEqual(node.props_to_html(), expected_output)
 
     def test_props_to_html_empty_props(self):
-        node = HtmlNode(props={})
+        node = HTMLNode(props={})
         self.assertEqual(node.props_to_html(), "")
 
     def test_props_to_html(self):
-        node = HtmlNode(props=None)
+        node = HTMLNode(props=None)
         self.assertEqual(node.props_to_html(), "")
 
 

@@ -1,4 +1,4 @@
-class HtmlNode:
+class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
         self.value = value
@@ -6,7 +6,23 @@ class HtmlNode:
         self.props = props
 
     def to_html(self):
-        raise NotImplementedError("to_html method not implemented")
+        # Handle opening tag
+        props_html = self.props_to_html()
+        opening = f"<{self.tag}{props_html}>"
+
+        # Handle value or render children if present
+        body = ""
+        if self.value:  # If value exists, use it as the body's content
+            body = self.value
+        elif self.children:  # If children exist, recursively build their HTML
+            for child in self.children:
+                body += child.to_html()
+
+        # Handle closing tag
+        closing = f"</{self.tag}>"
+
+        # Combine everything together
+        return f"{opening}{body}{closing}"
 
     def props_to_html(self):
         if self.props is None:
@@ -17,10 +33,10 @@ class HtmlNode:
         return props_to_html
 
     def __repr__(self):
-        return f"HtmlNode({self.tag}, {self.value}, children:{self.children}, {self.props})"
+        return f"HTMLNode({self.tag}, {self.value}, children:{self.children}, {self.props})"
 
 
-class LeafNode(HtmlNode):
+class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
         super().__init__(tag, value, None, props=props)
 
@@ -42,7 +58,7 @@ class LeafNode(HtmlNode):
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
 
 
-class ParentNode(HtmlNode):
+class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
         super().__init__(tag, None, children, props=props)
 

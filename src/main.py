@@ -1,3 +1,6 @@
+from os import listdir, mkdir, path
+from shutil import copy, rmtree
+
 from htmlnode import LeafNode
 from textnode import TextNode, TextType
 
