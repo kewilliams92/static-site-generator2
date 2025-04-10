@@ -34,6 +34,10 @@ def generate_page(from_path, template_path, dest_path, basepath="/"):
     if dest_dir_path != "":
         os.makedirs(dest_dir_path, exist_ok=True)
 
+    # Write the HTML content to the destination file
+    with open(dest_path, "w") as dest_file:
+        dest_file.write(template)
+
 
 def generate_page_recursively(
     dir_path_content, template_path, dest_dir_path, basepath="/"
