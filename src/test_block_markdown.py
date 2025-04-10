@@ -6,6 +6,7 @@ from block_markdown import (
     markdown_to_blocks,
     markdown_to_html_node,
 )
+from generate_page import extract_title
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -105,6 +106,13 @@ class TestBlockMarkdown(unittest.TestCase):
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
+
+    def test_extract_title(self):
+        md = """
+    # This is a title
+    """
+        title = extract_title(md)
+        self.assertEqual(title, "This is a title")
 
 
 if __name__ == "__main__":

@@ -162,7 +162,11 @@ def create_html_node(block_type, content):
         return pre_node
 
     elif block_type == BlockType.QUOTE:
-        children = text_to_children(content)
+        # Remove the '>' prefix from each line before processing
+        lines = content.split("\n")
+        clean_lines = [line.lstrip(">").strip() for line in lines]
+        clean_content = "\n".join(clean_lines)
+        children = text_to_children(clean_content)
         return HTMLNode("blockquote", None, children)
 
     elif block_type == BlockType.UNORDERED_LIST:
