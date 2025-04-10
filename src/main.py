@@ -1,27 +1,43 @@
-from os import path
-from shutil import rmtree
+import os
+import pathlib
+import sys
 
-from copystatic import copy_files_recursive
+from copystatic import copy_static_recursively
 from generate_page import generate_page_recursively
-
-dir_path_static = "./static"
-dir_path_public = "./public"
-path_template = "./template.html"
-dir_path_content = "./content"
 
 
 def main():
-    if path.exists(dir_path_public):
-        print(f"Removing {dir_path_public}...")
-        rmtree(dir_path_public)
+    # Check if a base path was provided as a command-line argument
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = "/"
 
-    print(f"Copying {dir_path_static} to {dir_path_public}...")
-    copy_files_recursive(dir_path_static, dir_path_public)
+    print(f"Using basepath: {basepath}")
 
-    # Generate pages from all markdown files in content directory
-    print(f"Generating pages from {dir_path_content}...")
-    generate_page_recursively(dir_path_content, path_template, dir_path_public)
-    print("Done!")
+    # Define paths
+    content_dir = "content"
+    template_path = "template.html"
+    static_dir = "static"
+    docs_dir = "docs"
+
+    # Create docs directory if it doesn't exist
+    os.makedirs(docs_dir, exist_ok=True)
+
+    # Generate HTML pages from markdown files
+    if os.path.exists(content_dir):
+        generate_page_recursively(content_dir, template_path, docs_dir, basepath)
+    else:
+        print(f"Error: Content directory '{content_dir}' not found")
+
+    # Copy static files
+    if os.path.exists(static_dir):
+        copy_static_recursively(static_dir, docs_dir)
+    else:
+        print(f"Warning: Static directory '{static_dir}' not found")
+
+    print("Site generation complete!")
 
 
-main()
+if __name__ == "__main__":
+    main()

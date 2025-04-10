@@ -3,7 +3,7 @@ import shutil
 
 
 # This will copy contents from a source directory to a destination directory
-def copy_files_recursive(source_dir, destination_dir):
+def copy_static_recursively(source_dir, destination_dir):
     # if the path doesn't exist, then we should create it
     if not os.path.exists(destination_dir):
         print(f"Creating directory {destination_dir}...")
@@ -18,4 +18,4 @@ def copy_files_recursive(source_dir, destination_dir):
         if os.path.isfile(from_path):
             shutil.copy(from_path, to_path)
         else:
-            copy_files_recursive(from_path, to_path)
+            copy_static_recursively(from_path, to_path)

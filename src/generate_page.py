@@ -4,7 +4,7 @@ import pathlib
 from block_markdown import markdown_to_html_node
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath="/"):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}..")
     from_file = open(from_path, "r")
     markdown = from_file.read()
@@ -25,15 +25,19 @@ def generate_page(from_path, template_path, dest_path):
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
 
+    # Replace href and src attributes with the basepath
+    template = template.replace('href="/', f'href="{basepath}')
+    template = template.replace('src="/', f'src="{basepath}')
+
     # Now we write the full HTML page to a file at dest_path, creating any necessary directories if needed
     dest_dir_path = os.path.dirname(dest_path)
     if dest_dir_path != "":
         os.makedirs(dest_dir_path, exist_ok=True)
-    to_file = open(dest_path, "w")
-    to_file.write(template)
 
 
-def generate_page_recursively(dir_path_content, template_path, dest_dir_path):
+def generate_page_recursively(
+    dir_path_content, template_path, dest_dir_path, basepath="/"
+):
     print(
         f"Generating pages from {dir_path_content} {template_path} to {dest_dir_path}.."
     )
@@ -45,7 +49,10 @@ def generate_page_recursively(dir_path_content, template_path, dest_dir_path):
         if os.path.isfile(file_path):
             if file.endswith(".md"):
                 dest_path = pathlib.Path(dest_dir_path) / (file[:-3] + ".html")
-                generate_page(file_path, template_path, dest_path)
+                generate_page(file_path, template_path, dest_path, basepath)
+        elif os.path.isdir(file_path):
+            dest_dir = pathlib.Path(dest_dir_path) / file
+            generate_page_recursively(file_path, template_path, dest_dir, basepath)
         elif os.path.isdir(file_path):
             dest_dir = pathlib.Path(dest_dir_path) / file
             generate_page_recursively(file_path, template_path, dest_dir)
